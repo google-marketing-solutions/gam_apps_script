@@ -1,0 +1,7 @@
+# GAM SCRIPT
+
+This project provides a lightweight client-library for working with the Ad
+Manager API in Apps Script environments. The library generates the proper SOAP
+payload for each request and automatically parses the response, building on
+previous solutions that require building requests by hand. The library is
+written in TypeScript.
