@@ -2,10 +2,15 @@
   "name": "gam_apps_script",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+      "dist"
+  ],
   "scripts": {
     "test": "karma start",
     "build": "webpack",
+    "prepare": "webpack",
     "deploy": "webpack && clasp push"
   },
   "keywords": [],

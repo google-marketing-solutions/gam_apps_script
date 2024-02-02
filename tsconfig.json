@@ -3,6 +3,7 @@
     "target": "ES2015",
     "lib": ["ES2015"],
     "experimentalDecorators": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "declaration": true
   }
 }
