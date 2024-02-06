@@ -1,7 +1,7 @@
 {
   "name": "gam_apps_script",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.9.0",
+  "description": "Apps Script client-library for the Ad Manager API.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
