@@ -2,7 +2,14 @@
   "name": "gam_apps_script",
   "version": "0.9.0",
   "description": "Apps Script client-library for the Ad Manager API.",
-  "main": "./dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./ad_manager_client": "./dist/ad_manager_client.js",
+    "./ad_manager_error": "./dist/ad_manager_error.js",
+    "./ad_manager_service": "./dist/ad_manager_service.js",
+    "./report_downloader": "./dist/report_downloader.js",
+    "./statement_builder": "./dist/statement_builder.js"
+  },
   "types": "./dist/index.d.ts",
   "files": [
       "dist"
