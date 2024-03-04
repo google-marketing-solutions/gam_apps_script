@@ -18,14 +18,7 @@
 const path = require('path');
 
 module.exports = {
-  entry : {
-    index : './index.ts',
-    ad_manager_client : './ad_manager_client.ts',
-    ad_manager_error : './ad_manager_error.ts',
-    ad_manager_service : '/ad_manager_service.ts',
-    report_downloader : './report_downloader.ts',
-    statement_builder : './statement_builder.ts'
-  },
+  entry : "./index.ts",
   mode : 'production',
   module : {
     rules :
@@ -42,7 +35,7 @@ module.exports = {
   },
   output : {
     libraryTarget : 'this',
-    filename : '[name].js',
-    path : path.resolve(__dirname, 'dist'),
+    filename : 'index.js',
+    path : path.resolve(__dirname, 'build'),
   },
 };

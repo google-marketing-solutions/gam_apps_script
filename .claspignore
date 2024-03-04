@@ -14,5 +14,5 @@
 
 **/**
 !appsscript.json
-!dist/index.js
-!dist/index.js.LICENSE.txt
+!build/index.js
+!build/index.js.LICENSE.txt

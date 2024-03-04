@@ -4,6 +4,7 @@
     "lib": ["ES2015"],
     "experimentalDecorators": true,
     "outDir": "dist",
-    "declaration": true
+    "declaration": true,
+    "moduleResolution": "Node"
   }
 }
