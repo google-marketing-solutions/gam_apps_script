@@ -161,6 +161,31 @@ export class SoapHelper {
     return soapString;
   }
 
+
+  /**
+   * Returns an array of `ComplexType` objects that extend the provided parent
+   * type. It is necessary to traverse recursively to ensure all leaves of the
+   * class hierarchy are explored. Previously the library was only returning
+   * children one level down from the parent.
+   */
+  private getChildTypes(parentType: ComplexType): ComplexType[] {
+    const allTypes: ComplexType[] = [];
+
+    const traverseExtendedBy = (valueType: ComplexType) => {
+      const childTypes = valueType.extendedBy
+        .map((e) => this.types.get(e))
+        .filter((e) => e instanceof ComplexType) as ComplexType[];
+
+      for (const childType of childTypes) {
+        allTypes.push(childType);
+        traverseExtendedBy(childType);
+      }
+    };
+
+    traverseExtendedBy(parentType);
+    return allTypes;
+  }
+
   private createSoapPayloadForParameter(
       name: string, typeName: string|undefined, value: unknown): string {
     if (!typeName) {
@@ -206,9 +231,7 @@ export class SoapHelper {
           `Invalid usage of type ${typeName}: ${value}`);
     }
 
-    const childTypes =
-        valueType.extendedBy.map(e => this.types.get(e))
-            .filter(e => e instanceof ComplexType) as ComplexType[];
+    const childTypes = this.getChildTypes(valueType);
     const potentialTypes = new Set([valueType, ...childTypes]);
     let assumedType: ComplexType|undefined;
     let soapString: string|undefined;
