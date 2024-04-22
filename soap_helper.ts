@@ -186,6 +186,29 @@ export class SoapHelper {
     return allTypes;
   }
 
+  /**
+   * If the type set includes `TextValue`, returns true when the candidate type
+   * is `NumberValue` and the actual value provided is not a number. Otherwise,
+   * returns false and defers to Ad Manager API handling.
+   *
+   * The service definition for type `Value` includes sub-types `NumberValue`
+   * and `TextValue`, both of which specify a string data type. While attempting
+   * to create a SOAP payload for `Value`, type inference would always match
+   * `NumberValue` because it occurs earlier in the definition. This meant that
+   * non-numeric text values would often cause Ad Manager API errors.
+   */
+  private hasValueConflict(
+    types: Set<ComplexType>,
+    candidate: ComplexType,
+    value: unknown,
+  ) {
+    if (candidate.name === 'NumberValue' && typeof value !== 'number') {
+      return Array.from(types).some((type) => type.name === 'TextValue');
+    }
+
+    return false;
+  }
+
   private createSoapPayloadForParameter(
       name: string, typeName: string|undefined, value: unknown): string {
     if (!typeName) {
@@ -243,6 +266,11 @@ export class SoapHelper {
       [assumedType] = potentialTypes;
       let val = value as {[key: string]: unknown};
       try {
+        if (this.hasValueConflict(potentialTypes, assumedType, val['value'])) {
+          potentialTypes.delete(assumedType);
+          continue;
+        }
+
         for (const [propertyName, property] of assumedType.properties) {
           if (propertyName in val) {
             soapStringForValue += this.createSoapPayloadForParameter(
