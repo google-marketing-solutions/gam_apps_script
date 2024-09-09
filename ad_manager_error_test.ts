@@ -15,7 +15,11 @@
  * limitations under the License.
  */
 
-import {AdManagerError, AdManagerServerFault, AdManagerValueError} from './ad_manager_error';
+import {
+  AdManagerError,
+  AdManagerServerFault,
+  AdManagerValueError,
+} from './ad_manager_error';
 import {ApiException} from './typings/api_exception';
 
 describe('AdManagerError', () => {
@@ -34,16 +38,20 @@ describe('AdManagerValueError', () => {
 
 describe('AdManagerServerFault', () => {
   it('has the correct name', () => {
-    const apiException: ApiException =
-        jasmine.createSpyObj('ApiException', ['message', 'errors']);
+    const apiException: ApiException = jasmine.createSpyObj('ApiException', [
+      'message',
+      'errors',
+    ]);
     const error = new AdManagerServerFault(apiException);
 
     expect(error.name).toEqual('AdManagerServerFault');
   });
 
   it('holds the apiException', () => {
-    const apiException: ApiException =
-        jasmine.createSpyObj('ApiException', ['message', 'errors']);
+    const apiException: ApiException = jasmine.createSpyObj('ApiException', [
+      'message',
+      'errors',
+    ]);
     const error = new AdManagerServerFault(apiException);
 
     expect(error.errors).toEqual(apiException.errors);

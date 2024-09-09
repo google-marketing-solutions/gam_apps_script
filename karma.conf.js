@@ -16,18 +16,14 @@
  */
 
 module.exports = function(config) {
-    config.set({
-      frameworks: ['jasmine'],
-      files: [
-        '*_test.ts'
-      ],
-      preprocessors: {
-        '*_test.ts': ['webpack']
-      },
-      webpack: require('./webpack.config.js'),
-      reporters: ['progress'],
-      browsers: ['ChromeHeadless'],
-      autoWatch: true,
-      singleRun: false,
-    });
-  };
+  config.set({
+    frameworks: ['jasmine'],
+    files: ['*_test.ts'],
+    preprocessors: {'*_test.ts': ['webpack']},
+    webpack: require('./webpack.config.js'),
+    reporters: ['progress'],
+    browsers: ['ChromeHeadless'],
+    autoWatch: true,
+    singleRun: false,
+  });
+};

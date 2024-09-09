@@ -42,14 +42,14 @@ export class AdManagerService implements AdManagerServiceInterface {
    * @ignore
    */
   constructor(
-      readonly serviceName: string,
-      readonly serviceUrl: string,
-      readonly oAuthToken: string,
-      readonly applicationName: string,
-      readonly networkCode: string|number,
-      readonly apiVersion: string,
-      readonly httpHeaders: {[header: string]: string},
-      private readonly soapHelper: SoapHelper,
+    readonly serviceName: string,
+    readonly serviceUrl: string,
+    readonly oAuthToken: string,
+    readonly applicationName: string,
+    readonly networkCode: string | number,
+    readonly apiVersion: string,
+    readonly httpHeaders: {[header: string]: string},
+    private readonly soapHelper: SoapHelper,
   ) {}
 
   /**
@@ -62,12 +62,13 @@ export class AdManagerService implements AdManagerServiceInterface {
    *     request.
    * @return An object literal representing the API response.
    */
-  performOperation(operationName: string, ...operationParameters: unknown[]):
-      unknown {
+  performOperation(
+    operationName: string,
+    ...operationParameters: unknown[]
+  ): unknown {
     const soapPayload = this.createSoapPayload(
-        operationName,
-        this.soapHelper.createSoapPayload(
-            operationName, ...operationParameters),
+      operationName,
+      this.soapHelper.createSoapPayload(operationName, ...operationParameters),
     );
     const response = UrlFetchApp.fetch(this.serviceUrl, {
       headers: Object.assign({}, this.httpHeaders, {
@@ -75,21 +76,25 @@ export class AdManagerService implements AdManagerServiceInterface {
       }),
       payload: soapPayload,
       contentType: 'text/xml; charset=utf-8',
-      muteHttpExceptions: true
+      muteHttpExceptions: true,
     });
     const responseXml = XmlService.parse(response.getContentText());
-    const soapNamespace =
-        XmlService.getNamespace('http://schemas.xmlsoap.org/soap/envelope/');
-    const bodyElement =
-        responseXml.getRootElement().getChild('Body', soapNamespace);
+    const soapNamespace = XmlService.getNamespace(
+      'http://schemas.xmlsoap.org/soap/envelope/',
+    );
+    const bodyElement = responseXml
+      .getRootElement()
+      .getChild('Body', soapNamespace);
     if (!bodyElement) {
       throw new Error(response.getContentText());
     }
     return this.soapHelper.convertSoapResponseToObjectLiteral(bodyElement);
   }
 
-  private createSoapPayload(operationName: string, operationParameters: string):
-      string {
+  private createSoapPayload(
+    operationName: string,
+    operationParameters: string,
+  ): string {
     return `<soapenv:Envelope
     xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
@@ -98,15 +103,13 @@ export class AdManagerService implements AdManagerServiceInterface {
         <ns1:RequestHeader
             soapenv:actor="http://schemas.xmlsoap.org/soap/actor/next"
             soapenv:mustUnderstand="0"
-            xmlns:ns1="https://www.google.com/apis/ads/publisher/${
-        this.apiVersion}">
+            xmlns:ns1="https://www.google.com/apis/ads/publisher/${this.apiVersion}">
             <ns1:applicationName>${this.applicationName}</ns1:applicationName>
             <ns1:networkCode>${this.networkCode}</ns1:networkCode>
         </ns1:RequestHeader>
     </soapenv:Header>
     <soapenv:Body>
-      <${operationName} xmlns="https://www.google.com/apis/ads/publisher/${
-        this.apiVersion}">${operationParameters}</${operationName}>
+      <${operationName} xmlns="https://www.google.com/apis/ads/publisher/${this.apiVersion}">${operationParameters}</${operationName}>
     </soapenv:Body>
 </soapenv:Envelope>`;
   }

@@ -38,11 +38,11 @@ export class AdManagerClient implements AdManagerClientInterface {
    * @param httpHeaders Custom HTTP headers to add to API requests.
    */
   constructor(
-      readonly oAuthToken: string,
-      readonly applicationName: string,
-      readonly networkCode: string|number,
-      readonly apiVersion: string,
-      readonly httpHeaders: {[headerName: string]: string} = {},
+    readonly oAuthToken: string,
+    readonly applicationName: string,
+    readonly networkCode: string | number,
+    readonly apiVersion: string,
+    readonly httpHeaders: {[headerName: string]: string} = {},
   ) {}
 
   /**
@@ -51,18 +51,17 @@ export class AdManagerClient implements AdManagerClientInterface {
    * @return The created service.
    */
   getService(serviceName: string): AdManagerService {
-    const serviceUrl = `https://ads.google.com/apis/ads/publisher/${
-        this.apiVersion}/${serviceName}?wsdl`;
+    const serviceUrl = `https://ads.google.com/apis/ads/publisher/${this.apiVersion}/${serviceName}?wsdl`;
     const soapHelper = SoapHelper.createWithServiceUrl(serviceUrl);
     return new AdManagerService(
-        serviceName,
-        serviceUrl,
-        this.oAuthToken,
-        this.applicationName,
-        this.networkCode,
-        this.apiVersion,
-        this.httpHeaders,
-        soapHelper,
+      serviceName,
+      serviceUrl,
+      this.oAuthToken,
+      this.applicationName,
+      this.networkCode,
+      this.apiVersion,
+      this.httpHeaders,
+      soapHelper,
     );
   }
 
@@ -75,4 +74,5 @@ export class AdManagerClient implements AdManagerClientInterface {
     return new ReportDownloader(reportService);
   }
 }
+
 

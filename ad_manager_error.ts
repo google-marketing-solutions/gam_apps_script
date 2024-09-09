@@ -18,7 +18,7 @@
 /**
  * @fileoverview Classes representing errors thrown by this library.
  */
-import {ApiError, ApiException} from './typings/api_exception'
+import {ApiError, ApiException} from './typings/api_exception';
 
 /**
  * Parent class for all errors thrown by the library.
@@ -46,6 +46,7 @@ export class AdManagerServerFault extends AdManagerError {
     this.errors = apiException.errors;
   }
 }
+
 
 
 

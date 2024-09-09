@@ -21,13 +21,13 @@
 export declare interface AdManagerServiceInterface {
   readonly oAuthToken: string;
   readonly applicationName: string;
-  readonly networkCode: string|number;
+  readonly networkCode: string | number;
   readonly apiVersion: string;
   readonly serviceName: string;
   readonly httpHeaders?: {[key: string]: string};
 
   performOperation(
-      operationName: string,
-      operationParameters?: unknown,
-      ): unknown;
+    operationName: string,
+    operationParameters?: unknown,
+  ): unknown;
 }

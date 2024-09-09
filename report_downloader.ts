@@ -59,17 +59,24 @@ export class ReportDownloader implements ReportDownloaderInterface {
    * @return The download URL for the report.
    */
   waitForReport(
-      reportJob: ReportJob,
-      reportDownloadOptions = DEFAULT_REPORT_DOWNLOAD_OPTIONS): string {
+    reportJob: ReportJob,
+    reportDownloadOptions = DEFAULT_REPORT_DOWNLOAD_OPTIONS,
+  ): string {
     let status = ReportJobStatus.IN_PROGRESS;
     const reportJobWithId = this.reportService.performOperation(
-                                'runReportJob', reportJob) as ReportJob;
+      'runReportJob',
+      reportJob,
+    ) as ReportJob;
     let totalWaitTime = 0;
-    while (status === ReportJobStatus.IN_PROGRESS &&
-           totalWaitTime < WAIT_FOR_REPORT_TIMEOUT) {
+    while (
+      status === ReportJobStatus.IN_PROGRESS &&
+      totalWaitTime < WAIT_FOR_REPORT_TIMEOUT
+    ) {
       Utilities.sleep(SLEEP_INTERVAL);
       status = this.reportService.performOperation(
-                   'getReportJobStatus', reportJobWithId.id) as ReportJobStatus;
+        'getReportJobStatus',
+        reportJobWithId.id,
+      ) as ReportJobStatus;
       totalWaitTime += SLEEP_INTERVAL;
     }
     if (status === ReportJobStatus.IN_PROGRESS) {
@@ -79,8 +86,10 @@ export class ReportDownloader implements ReportDownloaderInterface {
       throw new Error('Failed to create report.');
     }
     return this.reportService.performOperation(
-               'getReportDownloadUrlWithOptions', reportJobWithId.id,
-               reportDownloadOptions) as string;
+      'getReportDownloadUrlWithOptions',
+      reportJobWithId.id,
+      reportDownloadOptions,
+    ) as string;
   }
 
   /**
@@ -91,14 +100,17 @@ export class ReportDownloader implements ReportDownloaderInterface {
    * @return The downloaded report as a GoogleAppsScript Blob.
    */
   getReportDataAsBlob(
-      reportJob: ReportJob, reportDownloadOptions?: ReportDownloadOptions):
-      GoogleAppsScript.Base.Blob {
-    const reportDownloadUrl =
-        this.waitForReport(reportJob, reportDownloadOptions);
-    const response = UrlFetchApp.fetch(
-        reportDownloadUrl,
-        {method: 'get', headers: {'Accept': 'application/a-gzip'}},
+    reportJob: ReportJob,
+    reportDownloadOptions?: ReportDownloadOptions,
+  ): GoogleAppsScript.Base.Blob {
+    const reportDownloadUrl = this.waitForReport(
+      reportJob,
+      reportDownloadOptions,
     );
+    const response = UrlFetchApp.fetch(reportDownloadUrl, {
+      method: 'get',
+      headers: {'Accept': 'application/a-gzip'},
+    });
     return response.getBlob();
   }
 
@@ -110,8 +122,9 @@ export class ReportDownloader implements ReportDownloaderInterface {
    * @return The downloaded report as a string.
    */
   getReportDataAsString(
-      reportJob: ReportJob,
-      reportDownloadOptions?: ReportDownloadOptions): string {
+    reportJob: ReportJob,
+    reportDownloadOptions?: ReportDownloadOptions,
+  ): string {
     const fileBlob = this.getReportDataAsBlob(reportJob, reportDownloadOptions);
     fileBlob.setContentType('application/x-gzip');
     const reportFile = Utilities.ungzip(fileBlob);

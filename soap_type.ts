@@ -19,14 +19,11 @@
  * @fileoverview Classes representing the different types in a SOAP WSDL.
  */
 
-
 /**
  * Abstract base class for representing SOAP types.
  */
 export abstract class SoapType {
-  constructor(
-      readonly name: string,
-  ) {}
+  constructor(readonly name: string) {}
 }
 
 /**
@@ -34,8 +31,8 @@ export abstract class SoapType {
  */
 export class EnumType extends SoapType {
   constructor(
-      override readonly name: string,
-      readonly enumerations: string[] = [],
+    override readonly name: string,
+    readonly enumerations: string[] = [],
   ) {
     super(name);
   }
@@ -47,10 +44,10 @@ export class EnumType extends SoapType {
 export class ComplexType extends SoapType {
   readonly properties: Map<string, ComplexTypeProperty> = new Map();
   constructor(
-      override readonly name: string,
-      properties: Map<string, ComplexTypeProperty>|ComplexTypeProperty[],
-      readonly baseTypeName?: string,
-      readonly extendedBy: string[] = [],
+    override readonly name: string,
+    properties: Map<string, ComplexTypeProperty> | ComplexTypeProperty[],
+    readonly baseTypeName?: string,
+    readonly extendedBy: string[] = [],
   ) {
     super(name);
     if (Array.isArray(properties)) {

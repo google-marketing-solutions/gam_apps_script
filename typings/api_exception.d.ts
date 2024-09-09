@@ -21,8 +21,8 @@
  */
 export interface ApiError {
   fieldPath: string;
-  fieldPathElements: {field: string; index: string;}[];
-  trigger: string
+  fieldPathElements: {field: string; index: string}[];
+  trigger: string;
   errorString: string;
 }
 

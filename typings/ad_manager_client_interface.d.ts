@@ -23,7 +23,7 @@ import {ReportDownloaderInterface} from './report_downloader_interface';
  */
 export declare interface AdManagerClientInterface {
   readonly applicationName: string;
-  readonly networkCode: string|number;
+  readonly networkCode: string | number;
   readonly apiVersion: string;
   readonly oAuthToken: string;
   readonly httpHeaders?: {[header: string]: string};

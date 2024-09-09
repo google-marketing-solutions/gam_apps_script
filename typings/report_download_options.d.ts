@@ -19,7 +19,7 @@
  * Represents an Ad Manager ReportDownloadOptions.
  */
 export declare interface ReportDownloadOptions {
-  readonly exportFormat?: 'TSV'|'TSV_EXCEL'|'CSV_DUMP'|'XML'|'XLSX';
+  readonly exportFormat?: 'TSV' | 'TSV_EXCEL' | 'CSV_DUMP' | 'XML' | 'XLSX';
   readonly includeReportProperties?: boolean;
   readonly includeTotalsRow?: boolean;
   readonly useGzipCompression?: boolean;

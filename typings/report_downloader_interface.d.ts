@@ -23,12 +23,15 @@ import {ReportJob} from './report_job';
  */
 export declare interface ReportDownloaderInterface {
   waitForReport(
-      reportJob: ReportJob,
-      reportDownloadOptions?: ReportDownloadOptions): string;
+    reportJob: ReportJob,
+    reportDownloadOptions?: ReportDownloadOptions,
+  ): string;
   getReportDataAsBlob(
-      reportJob: ReportJob, reportDownloadOptions?: ReportDownloadOptions):
-      GoogleAppsScript.Base.Blob;
+    reportJob: ReportJob,
+    reportDownloadOptions?: ReportDownloadOptions,
+  ): GoogleAppsScript.Base.Blob;
   getReportDataAsString(
-      reportJob: ReportJob,
-      reportDownloadOptions?: ReportDownloadOptions): string;
+    reportJob: ReportJob,
+    reportDownloadOptions?: ReportDownloadOptions,
+  ): string;
 }

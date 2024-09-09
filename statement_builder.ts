@@ -15,7 +15,14 @@
  * limitations under the License.
  */
 
-import {BindVariable, BindVariableSet, BindVariableValue, Statement, StatementBuilderInterface, StringKeyValueMap} from './typings/statement';
+import {
+  BindVariable,
+  BindVariableSet,
+  BindVariableValue,
+  Statement,
+  StatementBuilderInterface,
+  StringKeyValueMap,
+} from './typings/statement';
 
 /**
  * Handles the creation of PQL queries.
@@ -90,10 +97,13 @@ export class StatementBuilder implements StatementBuilderInterface {
    * @param value The value (or array of values) for the key.
    * @return A reference to the StatementBuilders.
    */
-  withBindVariable(key: string, value: BindVariableValue|BindVariableValue[]):
-      StatementBuilder {
-    const val: BindVariable|BindVariableSet =
-        Array.isArray(value) ? {values: value.map(v => ({value: v}))} : {value};
+  withBindVariable(
+    key: string,
+    value: BindVariableValue | BindVariableValue[],
+  ): StatementBuilder {
+    const val: BindVariable | BindVariableSet = Array.isArray(value)
+      ? {values: value.map((v) => ({value: v}))}
+      : {value};
     const stringKeyValueMap = {key, value: val};
     this.bindVariables.push(stringKeyValueMap);
     return this;
@@ -119,9 +129,10 @@ export class StatementBuilder implements StatementBuilderInterface {
     }
     query.push(`LIMIT ${this.limit} OFFSET ${this.offset}`);
     const queryString = query.join(' ');
-    return (this.bindVariables.length) ?
-        {query: queryString, values: this.bindVariables} :
-        {query: queryString};
+    return this.bindVariables.length
+      ? {query: queryString, values: this.bindVariables}
+      : {query: queryString};
   }
 }
+
 

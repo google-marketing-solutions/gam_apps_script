@@ -32,11 +32,14 @@ describe('AdManagerClient', () => {
     state.createWithServiceUrlSpy.and.returnValue(new SoapHelper(new Map()));
   });
 
-
   describe('constructor', () => {
     it('creates valid instance', () => {
-      const client =
-          new AdManagerClient('token', 'applicationName', 12345, 'v12345');
+      const client = new AdManagerClient(
+        'token',
+        'applicationName',
+        12345,
+        'v12345',
+      );
 
       expect(client.oAuthToken).toBe('token');
       expect(client.applicationName).toBe('applicationName');
@@ -47,11 +50,11 @@ describe('AdManagerClient', () => {
 
     it('sets httpHeaders when provided', () => {
       const client = new AdManagerClient(
-          'token',
-          'applicationName',
-          12345,
-          'v12345',
-          {'header': 'value'},
+        'token',
+        'applicationName',
+        12345,
+        'v12345',
+        {'header': 'value'},
       );
 
       expect(client.httpHeaders).toEqual({'header': 'value'});
@@ -61,7 +64,12 @@ describe('AdManagerClient', () => {
   describe('getService', () => {
     it('returns valid AdManagerService instance', () => {
       const client = new AdManagerClient(
-          'token', 'applicationName', 12345, 'v12345', {'header': 'value'});
+        'token',
+        'applicationName',
+        12345,
+        'v12345',
+        {'header': 'value'},
+      );
 
       const service: AdManagerService = client.getService('UserService');
 
@@ -70,27 +78,37 @@ describe('AdManagerClient', () => {
       expect(service.networkCode).toBe(12345);
       expect(service.apiVersion).toBe('v12345');
       expect(service.httpHeaders).toEqual({'header': 'value'});
-      expect(service.serviceUrl)
-          .toBe(
-              'https://ads.google.com/apis/ads/publisher/v12345/UserService?wsdl');
+      expect(service.serviceUrl).toBe(
+        'https://ads.google.com/apis/ads/publisher/v12345/UserService?wsdl',
+      );
     });
 
     it('creates SoapHelper with service URL', () => {
       const client = new AdManagerClient(
-          'token', 'applicationName', 12345, 'v12345', {'header': 'value'});
+        'token',
+        'applicationName',
+        12345,
+        'v12345',
+        {'header': 'value'},
+      );
 
       client.getService('UserService');
 
-      expect(state.createWithServiceUrlSpy)
-          .toHaveBeenCalledWith(
-              'https://ads.google.com/apis/ads/publisher/v12345/UserService?wsdl');
+      expect(state.createWithServiceUrlSpy).toHaveBeenCalledWith(
+        'https://ads.google.com/apis/ads/publisher/v12345/UserService?wsdl',
+      );
     });
   });
 
   describe('getReportDownloader', () => {
     it('returns valid ReportDownloader instance', () => {
       const client = new AdManagerClient(
-          'token', 'applicationName', 12345, 'v12345', {'header': 'value'});
+        'token',
+        'applicationName',
+        12345,
+        'v12345',
+        {'header': 'value'},
+      );
 
       const reportDownloader = client.getReportDownloader();
 

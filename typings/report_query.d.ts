@@ -22,7 +22,7 @@ import {Statement} from './statement';
  */
 export declare interface ReportQuery {
   readonly dimensions: string[];
-  readonly adUnitView?: 'TOP_LEVEL'|'FLAT'|'HIERARCHICAL';
+  readonly adUnitView?: 'TOP_LEVEL' | 'FLAT' | 'HIERARCHICAL';
   readonly columns: string[];
   readonly dimensionAttributes?: string[];
   readonly customFieldIds?: number[];
@@ -30,10 +30,22 @@ export declare interface ReportQuery {
   readonly customDimensionKeyIds?: number[];
   readonly startDate?: Date;
   readonly endDate?: Date;
-  readonly dateRangeType: 'TODAY'|'YESTERDAY'|'LAST_WEEK'|'LAST_MONTH'|
-      'LAST_3_MONTHS'|'REACH_LIFETIME'|'CUSTOM_DATE'|'NEXT_DAY'|'NEXT_90_DAYS'|
-      'NEXT_WEEK'|'NEXT_MONTH'|'CURRENT_AND_NEXT_MONTH'|'NEXT_QUARTER'|
-      'NEXT_3_MONTHS'|'NEXT_12_MONTHS';
+  readonly dateRangeType:
+    | 'TODAY'
+    | 'YESTERDAY'
+    | 'LAST_WEEK'
+    | 'LAST_MONTH'
+    | 'LAST_3_MONTHS'
+    | 'REACH_LIFETIME'
+    | 'CUSTOM_DATE'
+    | 'NEXT_DAY'
+    | 'NEXT_90_DAYS'
+    | 'NEXT_WEEK'
+    | 'NEXT_MONTH'
+    | 'CURRENT_AND_NEXT_MONTH'
+    | 'NEXT_QUARTER'
+    | 'NEXT_3_MONTHS'
+    | 'NEXT_12_MONTHS';
   readonly statement?: Statement;
   readonly reportCurrency?: string;
 }

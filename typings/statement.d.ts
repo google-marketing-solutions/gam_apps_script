@@ -48,7 +48,7 @@ export declare interface BindVariableSet {
  */
 export declare interface StringKeyValueMap {
   readonly key: string;
-  readonly value: BindVariable|BindVariableSet;
+  readonly value: BindVariable | BindVariableSet;
 }
 
 /**
@@ -63,8 +63,10 @@ export declare interface StatementBuilderInterface {
   where(clause: string): StatementBuilderInterface;
   withLimit(limit: number): StatementBuilderInterface;
   withOffset(offset: number): StatementBuilderInterface;
-  withBindVariable(key: string, value: BindVariableValue|BindVariableValue[]):
-      StatementBuilderInterface;
+  withBindVariable(
+    key: string,
+    value: BindVariableValue | BindVariableValue[],
+  ): StatementBuilderInterface;
   toStatement(): Statement;
   // TODO: Support order by
 }
