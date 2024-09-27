@@ -27,6 +27,9 @@ import {AdManagerServiceInterface} from './typings/ad_manager_service_interface'
  * Represents an Ad Manager Service for handling Ad Manager API operations.
  */
 export class AdManagerService implements AdManagerServiceInterface {
+  
+  readonly userAgent = '(DfpApi-AppsScript)';
+
   /**
    * Creates an AdManagerService. Not to be used directly; use
    * AdManagerClient.getService instead.
@@ -104,7 +107,7 @@ export class AdManagerService implements AdManagerServiceInterface {
             soapenv:actor="http://schemas.xmlsoap.org/soap/actor/next"
             soapenv:mustUnderstand="0"
             xmlns:ns1="https://www.google.com/apis/ads/publisher/${this.apiVersion}">
-            <ns1:applicationName>${this.applicationName}</ns1:applicationName>
+            <ns1:applicationName>${this.applicationName + ' ' + this.userAgent}</ns1:applicationName>
             <ns1:networkCode>${this.networkCode}</ns1:networkCode>
         </ns1:RequestHeader>
     </soapenv:Header>
