@@ -4,7 +4,7 @@
 This project provides a lightweight client-library for working with the Ad
 Manager API in Apps Script environments. The library is written in TypeScript.
 
-## To deploy the library
+## To your own copy of the the library
 
 Install dependencies with npm:
 
@@ -31,12 +31,18 @@ library.
 
 ## Usage
 
+Add the library to your project:
+
+```
+1lMVNCqWL6uYafMrcqiXazGtyqAefGZZw_4kKFU3ZBiRGr7SYWxgPt7ec
+```
+
 Using the library directly from the Apps Script editor after adding the library
 to a project should look something like this:
 
 ```js
 // Import your classes.
-const {AdManagerClient, StatementBuilder} = GamAppsScript;
+const {AdManagerClient, StatementBuilder} = GAMAppsScriptLibrary;
 
 // Define an application name, network code, and API Version (use the latest).
 const APP_NAME = 'APP_NAME';
