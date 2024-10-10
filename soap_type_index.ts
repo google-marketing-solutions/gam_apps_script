@@ -95,7 +95,10 @@ export function isSoapPrimitiveType(
  * @return Whether the type is an enum type.
  */
 export function isSoapEnumType(soapType: SoapType): soapType is SoapEnumType {
-  return typeof soapType === 'object' && 'enumerations' in soapType;
+  return (
+    typeof soapType === 'object' &&
+    (soapType as SoapEnumType).enumerations !== undefined
+  );
 }
 
 /**
@@ -106,7 +109,10 @@ export function isSoapEnumType(soapType: SoapType): soapType is SoapEnumType {
 export function isSoapObjectType(
   soapType: SoapType,
 ): soapType is SoapObjectType {
-  return typeof soapType === 'object' && 'properties' in soapType;
+  return (
+    typeof soapType === 'object' &&
+    (soapType as SoapObjectType).properties !== undefined
+  );
 }
 
 /**

@@ -194,9 +194,12 @@ export class TypeIndexProvider {
     }
 
     const types: SoapTypeIndex = {};
+    const enums: {[enumName: string]: SoapEnumType} = {};
     for (const [typeName, typeInfo] of Object.entries(typeInfoIndex)) {
-      if ('enumerations' in typeInfo == false) {
+      if ('properties' in typeInfo) {
         types[typeName] = {name: typeName, properties: {}, childTypes: []};
+      } else {
+        enums[typeName] = {name: typeName, enumerations: typeInfo.enumerations};
       }
     }
     for (const [typeName, typeInfo] of Object.entries(typeInfoIndex)) {
@@ -213,10 +216,7 @@ export class TypeIndexProvider {
         for (const property of typeInfo.properties) {
           types[typeName].properties[property.name] = {
             name: property.name,
-            type:
-              types[property.type] ??
-              typeInfoIndex[property.type] ??
-              property.type,
+            type: types[property.type] ?? enums[property.type] ?? property.type,
             isArray: property.isArray,
             isOptional: property.isOptional,
           };
