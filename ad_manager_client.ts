@@ -22,7 +22,9 @@
 
 import {AdManagerService} from './ad_manager_service';
 import {ReportDownloader} from './report_downloader';
-import {SoapHelper} from './soap_helper';
+import {SoapCreator} from './soap_creator';
+import {SoapParser} from './soap_parser';
+import {TypeIndexProvider} from './soap_type_index_provider';
 import {AdManagerClientInterface} from './typings/ad_manager_client_interface';
 
 /**
@@ -52,7 +54,7 @@ export class AdManagerClient implements AdManagerClientInterface {
    */
   getService(serviceName: string): AdManagerService {
     const serviceUrl = `https://ads.google.com/apis/ads/publisher/${this.apiVersion}/${serviceName}?wsdl`;
-    const soapHelper = SoapHelper.createWithServiceUrl(serviceUrl);
+    const typeIndex = TypeIndexProvider.createWithServiceUrl(serviceUrl);
     return new AdManagerService(
       serviceName,
       serviceUrl,
@@ -61,7 +63,9 @@ export class AdManagerClient implements AdManagerClientInterface {
       this.networkCode,
       this.apiVersion,
       this.httpHeaders,
-      soapHelper,
+      typeIndex,
+      new SoapCreator(),
+      new SoapParser(typeIndex),
     );
   }
 

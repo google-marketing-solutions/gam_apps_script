@@ -18,18 +18,26 @@
 import {AdManagerClient} from './ad_manager_client';
 import {AdManagerService} from './ad_manager_service';
 import {ReportDownloader} from './report_downloader';
-import {SoapHelper} from './soap_helper';
+import {TypeIndexProvider} from './soap_type_index_provider';
 
 interface TestState {
-  createWithServiceUrlSpy?: jasmine.Spy;
+  createWithServiceUrl?: jasmine.Spy;
+  xmlServiceSpy?: jasmine.SpyObj<typeof XmlService>;
 }
 
 describe('AdManagerClient', () => {
   const state: TestState = {};
 
   beforeEach(() => {
-    state.createWithServiceUrlSpy = spyOn(SoapHelper, 'createWithServiceUrl');
-    state.createWithServiceUrlSpy.and.returnValue(new SoapHelper(new Map()));
+    state.createWithServiceUrl = spyOn(
+      TypeIndexProvider,
+      'createWithServiceUrl',
+    );
+    state.createWithServiceUrl.and.returnValue({});
+    state.xmlServiceSpy = jasmine.createSpyObj('XmlService', {
+      getRawFormat: {format: 'xml'},
+    });
+    goog.exportSymbol('XmlService', state.xmlServiceSpy);
   });
 
   describe('constructor', () => {
@@ -94,7 +102,7 @@ describe('AdManagerClient', () => {
 
       client.getService('UserService');
 
-      expect(state.createWithServiceUrlSpy).toHaveBeenCalledWith(
+      expect(state.createWithServiceUrl).toHaveBeenCalledWith(
         'https://ads.google.com/apis/ads/publisher/v12345/UserService?wsdl',
       );
     });

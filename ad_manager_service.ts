@@ -20,14 +20,17 @@
  * respective services (eg LineItemService).
  */
 
-import {SoapHelper} from './soap_helper';
+import {AdManagerServerFault} from './ad_manager_error';
+import {SoapCreator} from './soap_creator';
+import {SoapParser} from './soap_parser';
+import {SoapObjectTypeProperty, SoapTypeIndex} from './soap_type_index';
 import {AdManagerServiceInterface} from './typings/ad_manager_service_interface';
+import {ApiException} from './typings/api_exception';
 
 /**
  * Represents an Ad Manager Service for handling Ad Manager API operations.
  */
 export class AdManagerService implements AdManagerServiceInterface {
-  
   readonly userAgent = '(DfpApi-AppsScript)';
 
   /**
@@ -52,8 +55,71 @@ export class AdManagerService implements AdManagerServiceInterface {
     readonly networkCode: string | number,
     readonly apiVersion: string,
     readonly httpHeaders: {[header: string]: string},
-    private readonly soapHelper: SoapHelper,
+    readonly serviceTypes: SoapTypeIndex,
+    private readonly soapCreator: SoapCreator,
+    private readonly soapParser: SoapParser,
   ) {}
+
+  private createSoapPayload(
+    operationName: string,
+    operationParameters: unknown[],
+  ): string {
+    const operation = this.serviceTypes[operationName];
+    if (!operation) {
+      throw new Error(`Unrecognized operation: ${operationName}`);
+    }
+    let requestObject = this.soapCreator.createRequestObjectFromParameterList(
+      operation,
+      operationParameters,
+    );
+    const requestOpjectSoapPayload =
+      this.soapCreator.convertSoapObjectToXmlString(operation, requestObject);
+    return `<soapenv:Envelope
+    xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <soapenv:Header>
+        <ns1:RequestHeader
+            soapenv:actor="http://schemas.xmlsoap.org/soap/actor/next"
+            soapenv:mustUnderstand="0"
+            xmlns:ns1="https://www.google.com/apis/ads/publisher/${this.apiVersion}">
+            <ns1:applicationName>${this.applicationName} ${this.userAgent}</ns1:applicationName>
+            <ns1:networkCode>${this.networkCode}</ns1:networkCode>
+        </ns1:RequestHeader>
+    </soapenv:Header>
+    <soapenv:Body>
+      <${operationName} xmlns="https://www.google.com/apis/ads/publisher/${this.apiVersion}">${requestOpjectSoapPayload}</${operationName}>
+    </soapenv:Body>
+</soapenv:Envelope>`;
+  }
+
+  private getResponseElement(
+    responseXml: GoogleAppsScript.XML_Service.Document,
+  ): {
+    responseTypeName: string;
+    responseElement: GoogleAppsScript.XML_Service.Element;
+  } {
+    const soapNamespace = XmlService.getNamespace(
+      'http://schemas.xmlsoap.org/soap/envelope/',
+    );
+    let responseElement = responseXml
+      ?.getRootElement()
+      ?.getChild('Body', soapNamespace)
+      ?.getContent(0)
+      ?.asElement();
+    if (!responseElement) {
+      throw new Error('No body element found in response');
+    }
+    let responseTypeName = responseElement.getName();
+    if (responseTypeName === 'Fault' || undefined) {
+      responseElement = responseElement
+        ?.getChild('detail')
+        ?.getContent(0)
+        ?.asElement();
+      responseTypeName = 'ApiException';
+    }
+    return {responseTypeName, responseElement};
+  }
 
   /**
    * Makes a request against the service for the method name and parameters
@@ -71,49 +137,27 @@ export class AdManagerService implements AdManagerServiceInterface {
   ): unknown {
     const soapPayload = this.createSoapPayload(
       operationName,
-      this.soapHelper.createSoapPayload(operationName, ...operationParameters),
+      operationParameters,
     );
-    const response = UrlFetchApp.fetch(this.serviceUrl, {
+    const responseText = UrlFetchApp.fetch(this.serviceUrl, {
       headers: Object.assign({}, this.httpHeaders, {
         'Authorization': `Bearer ${this.oAuthToken}`,
       }),
       payload: soapPayload,
       contentType: 'text/xml; charset=utf-8',
       muteHttpExceptions: true,
-    });
-    const responseXml = XmlService.parse(response.getContentText());
-    const soapNamespace = XmlService.getNamespace(
-      'http://schemas.xmlsoap.org/soap/envelope/',
-    );
-    const bodyElement = responseXml
-      .getRootElement()
-      .getChild('Body', soapNamespace);
-    if (!bodyElement) {
-      throw new Error(response.getContentText());
+    }).getContentText();
+    const responseXml = XmlService.parse(responseText);
+    const {responseTypeName, responseElement} =
+      this.getResponseElement(responseXml);
+    const soapObjectTypeForResponse = this.serviceTypes[responseTypeName];
+    const responseObject = this.soapParser.convertXmlElementToObjectLiteral(
+      responseElement,
+      soapObjectTypeForResponse,
+    ) as {rval: unknown};
+    if (responseTypeName === 'ApiException') {
+      throw new AdManagerServerFault(responseObject as unknown as ApiException);
     }
-    return this.soapHelper.convertSoapResponseToObjectLiteral(bodyElement);
-  }
-
-  private createSoapPayload(
-    operationName: string,
-    operationParameters: string,
-  ): string {
-    return `<soapenv:Envelope
-    xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <soapenv:Header>
-        <ns1:RequestHeader
-            soapenv:actor="http://schemas.xmlsoap.org/soap/actor/next"
-            soapenv:mustUnderstand="0"
-            xmlns:ns1="https://www.google.com/apis/ads/publisher/${this.apiVersion}">
-            <ns1:applicationName>${this.applicationName + ' ' + this.userAgent}</ns1:applicationName>
-            <ns1:networkCode>${this.networkCode}</ns1:networkCode>
-        </ns1:RequestHeader>
-    </soapenv:Header>
-    <soapenv:Body>
-      <${operationName} xmlns="https://www.google.com/apis/ads/publisher/${this.apiVersion}">${operationParameters}</${operationName}>
-    </soapenv:Body>
-</soapenv:Envelope>`;
+    return responseObject['rval'];
   }
 }

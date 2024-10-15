@@ -29,6 +29,38 @@ describe('SoapCreator', () => {
     soapCreator = new SoapCreator();
   });
 
+  describe('createRequestObjectFromParameterList', () => {
+    it('creates a request object from a list of parameters', () => {
+      const operation: SoapObjectType = {
+        name: 'operationName',
+        properties: {
+          param1: {
+            name: 'param1',
+            type: 'string',
+            isOptional: false,
+            isArray: false,
+          },
+          param2: {
+            name: 'param2',
+            type: 'int',
+            isOptional: false,
+            isArray: false,
+          },
+        },
+      };
+
+      const requestObject = soapCreator.createRequestObjectFromParameterList(
+        operation,
+        ['param1_val', 123],
+      );
+
+      expect(requestObject).toEqual({
+        param1: 'param1_val',
+        param2: 123,
+      });
+    });
+  });
+
   describe('convertSoapObjectToXmlString', () => {
     function testConvertSoapObjectWithPrimitiveToXmlString(
       primitiveType: SoapPrimitiveType,

@@ -37,6 +37,30 @@ export class SoapCreator {
   constructor() {}
 
   /**
+   * Creates a literal request object from a list of parameters. This is a
+   * helper method to allow downstream users to more naturally call
+   * operations without knowing the name of the parameters in advance.
+   *
+   * @param operation The SOAP operation.
+   * @param operationParameters The list of parameters.
+   * @return The request object.
+   */
+  createRequestObjectFromParameterList(
+    operation: SoapObjectType,
+    operationParameters: unknown[],
+  ): {[key: string]: unknown} {
+    let requestObject: {[key: string]: unknown} = {};
+    const expectedParameters: SoapObjectTypeProperty[] = Object.values(
+      operation.properties,
+    );
+    operationParameters.forEach((parameter, index) => {
+      const parameterName = expectedParameters[index]?.name;
+      requestObject[parameterName] = parameter;
+    });
+    return requestObject;
+  }
+
+  /**
    * Converts a simple SOAP type to an XML string. Supported types are string,
    * boolean, int, long, double, and SOAP enums.
    *
