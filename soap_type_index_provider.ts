@@ -15,7 +15,11 @@
  * limitations under the License.
  */
 
-import {SoapEnumType, SoapTypeIndex} from './soap_type_index';
+import {
+  SoapEnumType,
+  SoapPrimitiveType,
+  SoapTypeIndex,
+} from './soap_type_index';
 
 /**
  * Information about a property on a SOAP object.
@@ -216,7 +220,10 @@ export class TypeIndexProvider {
         for (const property of typeInfo.properties) {
           types[typeName].properties[property.name] = {
             name: property.name,
-            type: types[property.type] ?? enums[property.type] ?? property.type,
+            type:
+              types[property.type] ??
+              enums[property.type] ??
+              (property.type as SoapPrimitiveType),
             isArray: property.isArray,
             isOptional: property.isOptional,
           };

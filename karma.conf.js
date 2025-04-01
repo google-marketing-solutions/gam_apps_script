@@ -15,15 +15,23 @@
  * limitations under the License.
  */
 
+// Load webpack.config.js and configure for use with Karma
+const webpackConfig = require('./webpack.config.js');
+delete webpackConfig.entry;
+delete webpackConfig.output;
+delete webpackConfig.mode;
+webpackConfig.devtool = 'inline-source-map';
+
 module.exports = function(config) {
   config.set({
-    frameworks: ['jasmine'],
+    frameworks: ['jasmine', 'webpack'],
+    plugins: ['karma-webpack', 'karma-jasmine', 'karma-chrome-launcher'],
     files: ['*_test.ts'],
     preprocessors: {'*_test.ts': ['webpack']},
-    webpack: require('./webpack.config.js'),
+    webpack: webpackConfig,
     reporters: ['progress'],
     browsers: ['ChromeHeadless'],
-    autoWatch: true,
-    singleRun: false,
+    autoWatch: false,
+    singleRun: true,
   });
 };

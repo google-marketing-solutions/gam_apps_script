@@ -15,11 +15,10 @@
  * limitations under the License.
  */
 
-import 'jasmine';
 import {
   FakeAppsScriptAttribute,
   FakeAppsScriptElement,
-  FakeAppsScriptNamepsace,
+  FakeAppsScriptNamespace,
 } from './fake_apps_script_xml_service';
 import {SoapParser} from './soap_parser';
 import {SoapObjectType, SoapPrimitiveType} from './soap_type_index';
@@ -44,7 +43,7 @@ describe('SoapParser', () => {
     );
     const xmlServiceSpy = jasmine.createSpyObj('XmlService', ['getRawFormat']);
     xmlServiceSpy.getRawFormat.and.returnValue(state.xmlFormatSpy);
-    goog.exportSymbol('XmlService', xmlServiceSpy);
+    (globalThis as any).XmlService = xmlServiceSpy;
   });
 
   describe('convertXmlElementToObjectLiteral', () => {
@@ -165,7 +164,7 @@ describe('SoapParser', () => {
         new FakeAppsScriptElement('breed', [], 'Yellow Lab'),
       ],
       '',
-      new FakeAppsScriptNamepsace('unused namespace'),
+      new FakeAppsScriptNamespace('unused namespace'),
       [new FakeAppsScriptAttribute('type', 'DogType')],
     ) as unknown as GoogleAppsScript.XML_Service.Element;
 

@@ -22,7 +22,6 @@ import {TypeIndexProvider} from './soap_type_index_provider';
 
 interface TestState {
   createWithServiceUrl?: jasmine.Spy;
-  xmlServiceSpy?: jasmine.SpyObj<typeof XmlService>;
 }
 
 describe('AdManagerClient', () => {
@@ -34,10 +33,6 @@ describe('AdManagerClient', () => {
       'createWithServiceUrl',
     );
     state.createWithServiceUrl.and.returnValue({});
-    state.xmlServiceSpy = jasmine.createSpyObj('XmlService', {
-      getRawFormat: {format: 'xml'},
-    });
-    goog.exportSymbol('XmlService', state.xmlServiceSpy);
   });
 
   describe('constructor', () => {

@@ -134,7 +134,7 @@ export class SoapCreator {
     const valueAsArray = Array.isArray(value) ? value : [value];
     for (const val of valueAsArray) {
       const {actualType, soapXmlString} = this.convertSoapValueToXmlString(
-        soapObjectTypeProperty.type,
+        soapObjectTypeProperty.type as SoapType,
         val,
       );
       /** start tag */ valueSoapString +=

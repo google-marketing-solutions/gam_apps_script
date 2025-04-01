@@ -162,7 +162,10 @@ export class SoapParser {
       if (property === undefined) {
         throw new Error(`${propertyName} is not valid: ${child}`);
       }
-      const childValue = this.convertXmlElementToSoapType(child, property.type);
+      const childValue = this.convertXmlElementToSoapType(
+        child,
+        property.type as SoapType,
+      );
       if (property.isArray) {
         const childArray =
           propertyName in obj ? (obj[propertyName] as unknown[]) : [];
