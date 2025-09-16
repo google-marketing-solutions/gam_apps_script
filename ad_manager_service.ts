@@ -112,10 +112,11 @@ export class AdManagerService implements AdManagerServiceInterface {
     }
     let responseTypeName = responseElement.getName();
     if (responseTypeName === 'Fault' || undefined) {
+      //TODO: Updated typings asElement() can now return null.
       responseElement = responseElement
         ?.getChild('detail')
         ?.getContent(0)
-        ?.asElement();
+        ?.asElement()!;
       responseTypeName = 'ApiException';
     }
     return {responseTypeName, responseElement};

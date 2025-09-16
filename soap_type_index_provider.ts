@@ -60,9 +60,11 @@ function parseComplexType(
 ): SoapObjectTypeInfo {
   let complexTypeElement = element;
   if (element.getName() === 'element') {
-    complexTypeElement = element.getChild('complexType', xmlNamespace);
+    //TODO: Updated typings getChild() can now return null.
+    complexTypeElement = element.getChild('complexType', xmlNamespace)!;
   }
-  const complexTypeName = element.getAttribute('name')?.getValue();
+  //TODO: Updated typings getAttribute() can now return null.
+  const complexTypeName = element.getAttribute('name')?.getValue() ?? '';
   let properties = parseComplexTypeProperties(complexTypeElement, xmlNamespace);
   const extensionElement = complexTypeElement
     ?.getChild('complexContent', xmlNamespace)
@@ -94,17 +96,21 @@ function parseComplexTypeProperties(
 ): SoapObjectTypePropertyInfo[] {
   return (element?.getChild('sequence', xmlNamespace)?.getChildren() ?? []).map(
     (propertyElement) => {
+      //TODO: Updated typings getAttribute() can now return null.
       const typeName = propertyElement
-        .getAttribute('type')
+        .getAttribute('type')!
         .getValue()
         .split(':')[1];
       return {
-        name: propertyElement.getAttribute('name').getValue(),
+        //TODO: Updated typings getAttribute() can now return null.
+        name: propertyElement.getAttribute('name')!.getValue(),
         type: typeName,
         isArray:
-          propertyElement.getAttribute('maxOccurs').getValue() === 'unbounded',
+          //TODO: Updated typings getAttribute() can now return null.
+          propertyElement.getAttribute('maxOccurs')!.getValue() === 'unbounded',
         isOptional:
-          propertyElement.getAttribute('minOccurs').getValue() === '0',
+          //TODO: Updated typings getAttribute() can now return null.
+          propertyElement.getAttribute('minOccurs')!.getValue() === '0',
       };
     },
   );
@@ -122,9 +128,11 @@ function parseEnumType(
   xmlNamespace: GoogleAppsScript.XML_Service.Namespace,
 ): string[] {
   return (
-    element.getChild('restriction', xmlNamespace).getChildren() ?? []
+    //TODO: Updated typings getChild() can now return null.
+    element.getChild('restriction', xmlNamespace)!.getChildren() ?? []
   ).map((enumeration) => {
-    return enumeration.getAttribute('value').getValue();
+    //TODO: Updated typings getAttribute() can now return null.
+    return enumeration.getAttribute('value')!.getValue();
   });
 }
 
@@ -148,15 +156,17 @@ function createTypeInfoIndexFromServiceUrl(
     muteHttpExceptions: true,
   });
   const responseXml = XmlService.parse(response.getContentText());
+  //TODO: Updated typings getRootElement/getChild can now return null.
   const serviceWsdl = responseXml.getRootElement();
-  const typeElements = serviceWsdl
-    .getChild('types', wsdlNamespace)
-    .getChild('schema', xmlNamespace)
+  const typeElements = serviceWsdl!
+    .getChild('types', wsdlNamespace)!
+    .getChild('schema', xmlNamespace)!
     .getChildren();
 
   const typeInfoIndex: SerializableTypeIndex = {};
   for (const typeElement of typeElements) {
-    const typeName = typeElement.getAttribute('name')?.getValue();
+    //TODO: Updated typings getValue() can now return null.
+    const typeName = typeElement.getAttribute('name')?.getValue()!;
     switch (typeElement.getName()) {
       case 'element':
       case 'complexType':
